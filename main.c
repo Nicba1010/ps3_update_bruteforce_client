@@ -169,7 +169,7 @@ void generate_ids(uint64_t startPosition, uint64_t desiredCount)
         }
     }
 
-    printf("%llu ids generated, %lld used!\n", currentPosition, stb_sb_count(id_list));
+    printf("%lu ids generated, %lld used!\n", currentPosition, stb_sb_count(id_list));
 }
 
 typedef struct
@@ -237,7 +237,7 @@ int main(void)
     }
 
     // Generate IDs
-    generate_ids(0, 200000);
+    generate_ids(0, 524288);
 
     CURLM *curl_multi_handle;
     CURLMsg *curl_message;
@@ -308,7 +308,6 @@ int main(void)
                 fwrite(response->id, 9, 1, f);
 //                fwrite(&(response->http_status_code), sizeof(response->http_status_code), 1, f);
 //                fwrite(&(response->data_length), sizeof(response->data_length), 1, f);
-//                fflush(f);
                 // Cleanup
                 curl_multi_remove_handle(curl_multi_handle, curl_easy_handle);
                 curl_easy_cleanup(curl_easy_handle);
@@ -343,9 +342,10 @@ int main(void)
     printf("Average requests per second is %d!\n", requestsPerSecond);
 
     // Cleanup
+    printf("Closing file handle!");
+    fclose(f);
     curl_multi_cleanup(curl_multi_handle);
     curl_global_cleanup();
-    fclose(f);
 
     return EXIT_SUCCESS;
 }
